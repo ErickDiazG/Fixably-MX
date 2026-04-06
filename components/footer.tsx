@@ -38,7 +38,7 @@ export function Footer() {
               </span>
             </Link>
             <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
-              Profesionales Certificados para tu Obra. Conectamos clientes con 
+              Profesionales Certificados para tu Obra. Conectamos clientes con
               los mejores profesionales verificados de México.
             </p>
             <div className="mt-4 space-y-2 text-sm text-muted-foreground">
@@ -113,7 +113,7 @@ export function Footer() {
 
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 md:flex-row">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} TheBlueColorList. Todos los derechos reservados.
+            © {new Date().getFullYear()} Desarrollado por <Link href="https://devdiazlabs.com" className="text-primary">DevDiaz Labs</Link>
           </p>
           <div className="flex gap-4">
             <a

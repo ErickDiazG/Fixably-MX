@@ -1,30 +1,30 @@
-# TheBlueColorList MVP
+# 🛠️ Fixably-MX (PWA)
 
-*Automatically synced with your [v0.app](https://v0.app) deployments*
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/erickgdiazg-3971s-projects/v0-fixably-mx)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.app-black?style=for-the-badge)](https://v0.app/chat/isjZPLPHw1n)
+## 🗺️ Roadmap de Desarrollo
 
-## Overview
+### 📍 Fase 1 – MVP (Estado Actual: 🟡 En Desarrollo)
+- [x] Arquitectura de páginas básica.
+- [] Buscador con filtros funcionales (Mock Data).
+- [x] Perfil de profesional dinámico.
+- [x] Formulario de solicitud de proyecto.
+- [ ] Conexión con Supabase para datos reales.
+- [ ] Sistema de Autenticación (Auth.js / Supabase Auth).
 
-This repository will stay in sync with your deployed chats on [v0.app](https://v0.app).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.app](https://v0.app).
+### 📍 Fase 2 – Validación y Lanzamiento
+- [ ] Sistema de mensajería en tiempo real.
+- [ ] Proceso de carga de documentos para verificación.
+- [ ] Dashboard de administrador para moderar perfiles.
 
-## Deployment
+### 📍 Fase 3 – Crecimiento
+- [ ] Integración de pagos (Stripe / Mercado Pago).
+- [ ] Notificaciones por WhatsApp (Twilio).
+- [ ] App Móvil nativa.
 
-Your project is live at:
+---
 
-**[https://vercel.com/erickgdiazg-3971s-projects/v0-fixably-mx](https://vercel.com/erickgdiazg-3971s-projects/v0-fixably-mx)**
+## 📄 Licencia
 
-## Build your app
+Este proyecto está bajo la **Licencia MIT**. Consulta el archivo [LICENSE](LICENSE) para más detalles.
 
-Continue building your app on:
-
-**[https://v0.app/chat/isjZPLPHw1n](https://v0.app/chat/isjZPLPHw1n)**
-
-## How It Works
-
-1. Create and modify your project using [v0.app](https://v0.app)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
+---
