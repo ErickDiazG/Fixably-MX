@@ -21,14 +21,14 @@ export function Header() {
   ]
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b-2 border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
+          <div className="flex h-9 w-9 items-center justify-center rounded-sm bg-primary">
             <ClipboardList className="h-5 w-5 text-primary-foreground" />
           </div>
-          <span className="text-xl font-bold text-foreground">
-            TheBlue<span className="text-primary">ColorList</span>
+          <span className="text-xl font-black tracking-tight uppercase text-foreground">
+            Fixably<span className="text-accent underline decoration-4 underline-offset-4">MX</span>
           </span>
         </Link>
 
@@ -38,7 +38,7 @@ export function Header() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+              className="text-sm font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground hover:underline decoration-accent decoration-2 underline-offset-4"
             >
               {link.label}
             </Link>
@@ -46,10 +46,10 @@ export function Header() {
         </nav>
 
         <div className="hidden items-center gap-3 md:flex">
-          <Button variant="outline" asChild>
+          <Button variant="outline" className="rounded-sm border-2 font-bold uppercase tracking-wide" asChild>
             <Link href="/login">Acceder</Link>
           </Button>
-          <Button asChild>
+          <Button asChild className="rounded-sm bg-accent text-accent-foreground hover:bg-accent/90 border-2 border-primary font-bold uppercase tracking-wide">
             <Link href="/publicar-proyecto">
               <Wrench className="mr-2 h-4 w-4" />
               Publicar Proyecto

@@ -25,3 +25,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# UI/UX Pro Max (AI Skills) - Deletable once work is finished
+.ui-ux-pro-max/
