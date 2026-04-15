@@ -2,8 +2,6 @@
 
 import { useState, useMemo, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { Header } from '@/components/header'
-import { Footer } from '@/components/footer'
 import { ProfessionalCard } from '@/components/professional-card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -241,9 +239,7 @@ function SearchContent() {
   )
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <Header />
-      <main className="flex-1 bg-secondary/20">
+    <main className="flex-1 bg-secondary/20">
         {/* Search Header */}
         <div className="border-b border-border bg-background py-6">
           <div className="container mx-auto px-4">
@@ -406,8 +402,6 @@ function SearchContent() {
           </div>
         </div>
       </main>
-      <Footer />
-    </div>
   )
 }
 

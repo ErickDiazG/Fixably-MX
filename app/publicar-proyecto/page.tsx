@@ -2,8 +2,6 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Header } from '@/components/header'
-import { Footer } from '@/components/footer'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -118,9 +116,7 @@ export default function PublicarProyectoPage() {
 
   if (isComplete) {
     return (
-      <div className="flex min-h-screen flex-col">
-        <Header />
-        <main className="flex flex-1 items-center justify-center bg-secondary/20 px-4">
+      <main className="flex flex-1 items-center justify-center bg-secondary/20 px-4">
           <Card className="w-full max-w-md text-center">
             <CardContent className="pt-12 pb-8">
               <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-green-500/10">
@@ -146,15 +142,11 @@ export default function PublicarProyectoPage() {
               </div>
             </CardContent>
           </Card>
-        </main>
-        <Footer />
-      </div>
+      </main>
     )
   }
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <Header />
       <main className="flex-1 bg-secondary/20 py-8">
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-2xl">
@@ -469,7 +461,5 @@ export default function PublicarProyectoPage() {
           </div>
         </div>
       </main>
-      <Footer />
-    </div>
   )
 }

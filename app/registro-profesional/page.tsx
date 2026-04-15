@@ -3,8 +3,6 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Header } from '@/components/header'
-import { Footer } from '@/components/footer'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -184,9 +182,7 @@ export default function RegistroProfesionalPage() {
 
   if (isComplete) {
     return (
-      <div className="flex min-h-screen flex-col">
-        <Header />
-        <main className="flex flex-1 items-center justify-center bg-secondary/20 px-4">
+      <main className="flex flex-1 items-center justify-center bg-secondary/20 px-4">
           <Card className="w-full max-w-md text-center">
             <CardContent className="pt-12 pb-8">
               <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
@@ -228,22 +224,18 @@ export default function RegistroProfesionalPage() {
               </div>
             </CardContent>
           </Card>
-        </main>
-        <Footer />
-      </div>
+      </main>
     )
   }
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <Header />
       <main className="flex-1 bg-secondary/20 py-8">
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-2xl">
             {/* Header */}
             <div className="mb-8 text-center">
               <h1 className="text-2xl font-bold text-foreground md:text-3xl">
-                Únete a TheBlueColorList
+                Únete a FixablyMX
               </h1>
               <p className="mt-2 text-muted-foreground">
                 Completa tu registro para comenzar a recibir proyectos
@@ -695,7 +687,7 @@ export default function RegistroProfesionalPage() {
                     />
                     <label htmlFor="terms" className="text-sm text-muted-foreground cursor-pointer">
                       Acepto los <Link href="/terminos" className="text-primary hover:underline">Términos de Servicio</Link> y 
-                      la <Link href="/privacidad" className="text-primary hover:underline">Política de Privacidad</Link> de TheBlueColorList.
+                      la <Link href="/privacidad" className="text-primary hover:underline">Política de Privacidad</Link> de FixablyMX.
                     </label>
                   </div>
                 </CardContent>
@@ -730,7 +722,5 @@ export default function RegistroProfesionalPage() {
           </div>
         </div>
       </main>
-      <Footer />
-    </div>
   )
 }

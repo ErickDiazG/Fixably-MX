@@ -48,21 +48,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-secondary/30 flex flex-col">
-      {/* Header */}
-      <header className="border-b bg-card">
-        <div className="container mx-auto px-4 py-4">
-          <Link href="/" className="flex items-center gap-2 w-fit">
-            <div className="bg-primary rounded-lg p-2">
-              <HardHat className="h-6 w-6 text-primary-foreground" />
-            </div>
-            <span className="text-xl font-bold text-foreground">
-              TheBlueColorList
-            </span>
-          </Link>
-        </div>
-      </header>
-
+    <div className="bg-secondary/30 flex-1">
       {/* Main Content */}
       <main className="flex-1 flex items-center justify-center p-4">
         <div className="w-full max-w-md">

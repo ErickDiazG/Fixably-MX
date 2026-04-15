@@ -1,7 +1,5 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { Header } from '@/components/header'
-import { Footer } from '@/components/footer'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -82,9 +80,7 @@ export default async function ProfessionalProfilePage({ params }: Props) {
   ]
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <Header />
-      <main className="flex-1 bg-secondary/20">
+    <main className="flex-1 bg-secondary/20">
         {/* Profile Header */}
         <div className="border-b border-border bg-background">
           <div className="container mx-auto px-4 py-8">
@@ -105,7 +101,7 @@ export default async function ProfessionalProfilePage({ params }: Props) {
                     {professional.verified && (
                       <Badge className="gap-1 bg-primary/10 text-primary hover:bg-primary/20">
                         <BadgeCheck className="h-3.5 w-3.5" />
-                        Verificado TBCL
+                        Verificado FixablyMX
                       </Badge>
                     )}
                     {professional.licensed && (
@@ -432,7 +428,5 @@ export default async function ProfessionalProfilePage({ params }: Props) {
           </div>
         </div>
       </main>
-      <Footer />
-    </div>
   )
 }

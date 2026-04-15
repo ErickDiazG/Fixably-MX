@@ -34,7 +34,7 @@ export function Footer() {
                 <ClipboardList className="h-5 w-5 text-primary-foreground" />
               </div>
               <span className="text-xl font-bold text-foreground">
-                TheBlue<span className="text-primary">ColorList</span>
+                Fixably<span className="text-primary">MX</span>
               </span>
             </Link>
             <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
@@ -44,8 +44,8 @@ export function Footer() {
             <div className="mt-4 space-y-2 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
                 <Mail className="h-4 w-4" />
-                <a href="mailto:hola@thebluecolorlist.com" className="hover:text-primary">
-                  hola@thebluecolorlist.com
+                <a href="mailto:hola@fixablymx.com" className="hover:text-primary">
+                  hola@fixablymx.com
                 </a>
               </div>
               <div className="flex items-center gap-2">
@@ -113,7 +113,7 @@ export function Footer() {
 
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 md:flex-row">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Desarrollado por <Link href="https://devdiazlabs.com" className="text-primary">DevDiaz Labs</Link>
+            © {new Date().getFullYear()} FixablyMX. Desarrollado por <Link href="https://devdiazlabs.com" className="text-primary">DevDiaz Labs</Link>
           </p>
           <div className="flex gap-4">
             <a
