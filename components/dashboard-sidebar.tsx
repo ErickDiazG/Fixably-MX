@@ -59,8 +59,8 @@ export function DashboardSidebar({ items, title }: DashboardSidebarProps) {
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
                 <ClipboardList className="h-4 w-4 text-primary-foreground" />
               </div>
-              <span className="font-semibold text-foreground">
-                TheBlue<span className="text-primary">ColorList</span>
+              <span className="font-black text-xl tracking-tight uppercase text-foreground">
+                Fixably<span className="text-accent underline decoration-4 underline-offset-4">MX</span>
               </span>
             </Link>
           </div>
@@ -88,8 +88,8 @@ export function DashboardSidebar({ items, title }: DashboardSidebarProps) {
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
                   <ClipboardList className="h-4 w-4 text-primary-foreground" />
                 </div>
-                <span className="font-semibold text-foreground">
-                  TheBlue<span className="text-primary">ColorList</span>
+                <span className="font-black text-xl tracking-tight uppercase text-foreground">
+                  Fixably<span className="text-accent underline decoration-4 underline-offset-4">MX</span>
                 </span>
               </Link>
             </div>
