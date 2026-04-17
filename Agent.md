@@ -52,9 +52,18 @@ Actúa como un **Senior Fullstack Developer y Product Manager** potenciado por *
   - Funciones/Variables: camelCase.
 - **Inputs en móvil**: Mantener fuentes de al menos 16px para evitar el zoom automático en iOS.
 
-### 7. Gestión de Datos y Seguridad
+### 7. Gestión de Datos, Seguridad y Arquitectura Segura (Security by Design)
+- **Principio Base (Security by Design/Default):** El software debe ser seguro desde su concepción. Adoptar una postura de "Mínimo Privilegio".
+- **Broken Access Control:** Prevenir esta vulnerabilidad asegurando que cada Server Action y API Route verifique explícitamente la identidad y permisos del usuario.
+- **Validación Estricta:** Toda entrada de datos (formularios, APIs, Server Actions) debe ser validada con `zod` antes de procesarse. Nunca confiar en el cliente.
+- **Prevención de Fuerza Bruta & Auth:** Delega la seguridad de contraseñas a Supabase Auth (hashing, políticas de contraseñas fuertes). No almacenar contraseñas en texto plano jamás.
+- **Base de Datos & RLS:** 
+  - Usar consultas parametrizadas (vía cliente oficial de Supabase) para prevenir SQL Injection.
+  - Implementar **Row Level Security (RLS)** en todas las tablas para garantizar que los usuarios solo accedan a lo permitido.
+- **Web Security:** Configurar adecuadamente CORS, Security Headers (CSP, HSTS) y cookies seguras.
+- **Next.js Security:** Usar `import 'server-only'` para prevenir fugas de lógica/secretos al cliente.
+- **Secretos:** Las API Keys y secretos deben vivir exclusivamente en `.env.local` y nunca commitearse.
 - **Tipos**: Los modelos viven en `lib/types.ts`. Extender aquí para mantener coherencia.
-- **Secretos**: Nunca commitear API keys; usar `.env.local`.
 - **Filtros**: Mantener sincronización clara entre Query Params de la URL y el estado de la búsqueda.
 
 ---

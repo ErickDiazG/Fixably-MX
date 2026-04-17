@@ -3,6 +3,9 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { useForm, Controller } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { registrationSchema, type RegistrationFormData } from '@/lib/validations'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -66,6 +69,7 @@ interface FormData {
   name: string
   email: string
   phone: string
+  countryCode: string
   specialty: string
   experience: string
   
@@ -95,65 +99,57 @@ export default function RegistroProfesionalPage() {
   const [step, setStep] = useState<Step>(1)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isComplete, setIsComplete] = useState(false)
-  const [formData, setFormData] = useState<FormData>({
-    name: '',
-    email: '',
-    phone: '',
-    specialty: '',
-    experience: '',
-    ineUploaded: false,
-    addressProofUploaded: false,
-    licenseUploaded: false,
-    insuranceUploaded: false,
-    projectCount: 0,
-    instagramLink: '',
-    facebookLink: '',
-    city: '',
-    selectedZones: [],
-    hourlyRate: '',
-    availability: [],
-    acceptTerms: false,
+
+  const {
+    register,
+    handleSubmit,
+    trigger,
+    control,
+    setValue,
+    watch,
+    formState: { errors, isValid },
+  } = useForm<RegistrationFormData>({
+    resolver: zodResolver(registrationSchema),
+    mode: 'onChange',
+    defaultValues: {
+      name: '',
+      email: '',
+      phone: '',
+      countryCode: '+52',
+      specialty: '',
+      experience: '',
+      ineUploaded: false,
+      addressProofUploaded: false,
+      licenseUploaded: false,
+      insuranceUploaded: false,
+      projectCount: 0,
+      instagramLink: '',
+      facebookLink: '',
+      city: '',
+      selectedZones: [],
+      hourlyRate: '',
+      availability: [],
+      acceptTerms: false,
+    },
   })
 
-  const updateForm = (field: keyof FormData, value: FormData[keyof FormData]) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
-  }
+  const formData = watch()
 
-  const toggleZone = (zone: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      selectedZones: prev.selectedZones.includes(zone)
-        ? prev.selectedZones.filter((z) => z !== zone)
-        : [...prev.selectedZones, zone],
-    }))
-  }
-
-  const toggleAvailability = (day: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      availability: prev.availability.includes(day)
-        ? prev.availability.filter((d) => d !== day)
-        : [...prev.availability, day],
-    }))
-  }
-
-  const canProceed = () => {
-    switch (step) {
-      case 1:
-        return formData.name && formData.email && formData.phone && formData.specialty && formData.experience
-      case 2:
-        return formData.ineUploaded && formData.addressProofUploaded
-      case 3:
-        return formData.projectCount >= 3
-      case 4:
-        return formData.city && formData.selectedZones.length > 0 && formData.hourlyRate
-      default:
-        return true
+  const handleNext = async () => {
+    let fieldsToValidate: (keyof RegistrationFormData)[] = []
+    
+    if (step === 1) {
+      fieldsToValidate = ['name', 'email', 'countryCode', 'phone', 'specialty', 'experience']
+    } else if (step === 2) {
+      fieldsToValidate = ['ineUploaded', 'addressProofUploaded']
+    } else if (step === 3) {
+      fieldsToValidate = ['projectCount']
+    } else if (step === 4) {
+      fieldsToValidate = ['city', 'selectedZones', 'hourlyRate', 'availability']
     }
-  }
 
-  const handleNext = () => {
-    if (step < 5) {
+    const isStepValid = await trigger(fieldsToValidate)
+    if (isStepValid && step < 5) {
       setStep((prev) => (prev + 1) as Step)
     }
   }
@@ -164,9 +160,10 @@ export default function RegistroProfesionalPage() {
     }
   }
 
-  const handleSubmit = async () => {
-    if (!formData.acceptTerms) return
+  const onFinalSubmit = async (data: RegistrationFormData) => {
     setIsSubmitting(true)
+    // Simulación de guardado seguro
+    console.log('Datos validados y listos:', data)
     await new Promise((resolve) => setTimeout(resolve, 2000))
     setIsSubmitting(false)
     setIsComplete(true)
@@ -292,77 +289,130 @@ export default function RegistroProfesionalPage() {
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div>
-                    <Label htmlFor="name">Nombre completo *</Label>
+                    <Label htmlFor="name" className={errors.name ? 'text-destructive' : ''}>Nombre completo *</Label>
                     <Input
                       id="name"
                       placeholder="Tu nombre como aparece en tu identificación"
-                      value={formData.name}
-                      onChange={(e) => updateForm('name', e.target.value)}
-                      className="mt-2"
+                      {...register('name')}
+                      className={`mt-2 ${errors.name ? 'border-destructive focus-visible:ring-destructive' : ''}`}
                     />
+                    {errors.name && (
+                      <p className="mt-1 text-xs text-destructive flex items-center gap-1">
+                        <AlertCircle className="h-3 w-3" /> {errors.name.message}
+                      </p>
+                    )}
                   </div>
 
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div>
-                      <Label htmlFor="email">Email *</Label>
+                      <Label htmlFor="email" className={errors.email ? 'text-destructive' : ''}>Email *</Label>
                       <Input
                         id="email"
                         type="email"
                         placeholder="tu@email.com"
-                        value={formData.email}
-                        onChange={(e) => updateForm('email', e.target.value)}
-                        className="mt-2"
+                        {...register('email')}
+                        className={`mt-2 ${errors.email ? 'border-destructive focus-visible:ring-destructive' : ''}`}
                       />
+                      {errors.email && (
+                        <p className="mt-1 text-xs text-destructive flex items-center gap-1">
+                          <AlertCircle className="h-3 w-3" /> {errors.email.message}
+                        </p>
+                      )}
                     </div>
                     <div>
-                      <Label htmlFor="phone">Teléfono *</Label>
-                      <Input
-                        id="phone"
-                        type="tel"
-                        placeholder="+52 55 1234 5678"
-                        value={formData.phone}
-                        onChange={(e) => updateForm('phone', e.target.value)}
-                        className="mt-2"
-                      />
+                      <Label htmlFor="phone" className={errors.phone || errors.countryCode ? 'text-destructive' : ''}>Teléfono *</Label>
+                      <div className="mt-2 flex gap-2">
+                        <div className="w-[110px]">
+                          <Controller
+                            name="countryCode"
+                            control={control}
+                            render={({ field }) => (
+                              <Select value={field.value} onValueChange={field.onChange}>
+                                <SelectTrigger className={errors.countryCode ? 'border-destructive' : ''}>
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="+52">🇲🇽 +52</SelectItem>
+                                  <SelectItem value="+1">🇺🇸 +1</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            )}
+                          />
+                        </div>
+                        <Input
+                          id="phone"
+                          type="tel"
+                          placeholder="5512345678"
+                          {...register('phone')}
+                          className={`flex-1 ${errors.phone ? 'border-destructive focus-visible:ring-destructive' : ''}`}
+                        />
+                      </div>
+                      {(errors.phone || errors.countryCode) && (
+                        <p className="mt-1 text-xs text-destructive flex items-center gap-1">
+                          <AlertCircle className="h-3 w-3" /> {errors.phone?.message || errors.countryCode?.message}
+                        </p>
+                      )}
                     </div>
                   </div>
 
                   <div>
-                    <Label htmlFor="specialty">Especialidad principal *</Label>
-                    <Select
-                      value={formData.specialty}
-                      onValueChange={(value) => updateForm('specialty', value)}
-                    >
-                      <SelectTrigger id="specialty" className="mt-2">
-                        <SelectValue placeholder="Selecciona tu especialidad" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {SPECIALTIES.map((spec) => (
-                          <SelectItem key={spec} value={spec}>
-                            {spec}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <Label htmlFor="specialty" className={errors.specialty ? 'text-destructive' : ''}>Especialidad principal *</Label>
+                    <Controller
+                      name="specialty"
+                      control={control}
+                      render={({ field }) => (
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger id="specialty" className={`mt-2 ${errors.specialty ? 'border-destructive' : ''}`}>
+                            <SelectValue placeholder="Selecciona tu especialidad" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {SPECIALTIES.map((spec) => (
+                              <SelectItem key={spec} value={spec}>
+                                {spec}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      )}
+                    />
+                    {errors.specialty && (
+                      <p className="mt-1 text-xs text-destructive flex items-center gap-1">
+                        <AlertCircle className="h-3 w-3" /> {errors.specialty.message}
+                      </p>
+                    )}
                   </div>
 
                   <div>
-                    <Label htmlFor="experience">Años de experiencia *</Label>
-                    <Select
-                      value={formData.experience}
-                      onValueChange={(value) => updateForm('experience', value)}
-                    >
-                      <SelectTrigger id="experience" className="mt-2">
-                        <SelectValue placeholder="Selecciona rango" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {EXPERIENCE_RANGES.map((range) => (
-                          <SelectItem key={range} value={range}>
-                            {range}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <Label htmlFor="experience" className={errors.experience ? 'text-destructive' : ''}>Años de experiencia *</Label>
+                    <Controller
+                      name="experience"
+                      control={control}
+                      render={({ field }) => (
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger id="experience" className={`mt-2 ${errors.experience ? 'border-destructive' : ''}`}>
+                            <SelectValue placeholder="Selecciona rango" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {EXPERIENCE_RANGES.map((range) => (
+                              <SelectItem key={range} value={range}>
+                                {range}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      )}
+                    />
+                    {errors.experience && (
+                      <p className="mt-1 text-xs text-destructive flex items-center gap-1">
+                        <AlertCircle className="h-3 w-3" /> {errors.experience.message}
+                      </p>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -396,32 +446,40 @@ export default function RegistroProfesionalPage() {
                     { key: 'licenseUploaded' as const, label: 'Licencia profesional', required: false, description: 'Si aplica para tu especialidad' },
                     { key: 'insuranceUploaded' as const, label: 'Seguro de responsabilidad civil', required: false, description: 'Recomendado para mayor confianza' },
                   ].map((doc) => (
-                    <div key={doc.key} className="flex items-center justify-between rounded-lg border border-border p-4">
-                      <div className="flex items-center gap-3">
-                        <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${
-                          formData[doc.key] ? 'bg-green-500/10' : 'bg-muted'
-                        }`}>
-                          {formData[doc.key] ? (
-                            <CheckCircle2 className="h-5 w-5 text-green-600" />
-                          ) : (
-                            <Upload className="h-5 w-5 text-muted-foreground" />
-                          )}
+                    <div key={doc.key} className="space-y-1">
+                      <div className={`flex items-center justify-between rounded-lg border p-4 ${errors[doc.key] ? 'border-destructive' : 'border-border'}`}>
+                        <div className="flex items-center gap-3">
+                          <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${
+                            formData[doc.key] ? 'bg-green-500/10' : 'bg-muted'
+                          }`}>
+                            {formData[doc.key] ? (
+                              <CheckCircle2 className="h-5 w-5 text-green-600" />
+                            ) : (
+                              <Upload className="h-5 w-5 text-muted-foreground" />
+                            )}
+                          </div>
+                          <div>
+                            <p className={`font-medium ${errors[doc.key] ? 'text-destructive' : 'text-foreground'}`}>
+                              {doc.label}
+                              {doc.required && <span className="text-destructive ml-1">*</span>}
+                            </p>
+                            <p className="text-sm text-muted-foreground">{doc.description}</p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="font-medium text-foreground">
-                            {doc.label}
-                            {doc.required && <span className="text-destructive ml-1">*</span>}
-                          </p>
-                          <p className="text-sm text-muted-foreground">{doc.description}</p>
-                        </div>
+                        <Button
+                          variant={formData[doc.key] ? 'outline' : 'default'}
+                          size="sm"
+                          type="button"
+                          onClick={() => setValue(doc.key, !formData[doc.key], { shouldValidate: true })}
+                        >
+                          {formData[doc.key] ? 'Cambiar' : 'Subir'}
+                        </Button>
                       </div>
-                      <Button
-                        variant={formData[doc.key] ? 'outline' : 'default'}
-                        size="sm"
-                        onClick={() => updateForm(doc.key, !formData[doc.key])}
-                      >
-                        {formData[doc.key] ? 'Cambiar' : 'Subir'}
-                      </Button>
+                      {errors[doc.key] && (
+                        <p className="px-1 text-xs text-destructive flex items-center gap-1">
+                          <AlertCircle className="h-3 w-3" /> {errors[doc.key]?.message}
+                        </p>
+                      )}
                     </div>
                   ))}
                 </CardContent>
@@ -438,18 +496,27 @@ export default function RegistroProfesionalPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <div className="rounded-lg border-2 border-dashed border-muted p-8 text-center">
-                    <FolderOpen className="mx-auto h-12 w-12 text-muted-foreground" />
+                  <div className={`rounded-lg border-2 border-dashed p-8 text-center ${errors.projectCount ? 'border-destructive bg-destructive/5' : 'border-muted'}`}>
+                    <FolderOpen className={`mx-auto h-12 w-12 ${errors.projectCount ? 'text-destructive' : 'text-muted-foreground'}`} />
                     <p className="mt-4 font-medium text-foreground">
                       Sube fotos de tus proyectos
                     </p>
                     <p className="mt-1 text-sm text-muted-foreground">
                       Mínimo 3 fotos por proyecto (antes, durante, después)
                     </p>
-                    <Button className="mt-4" onClick={() => updateForm('projectCount', formData.projectCount + 1)}>
+                    <Button 
+                      type="button"
+                      className="mt-4" 
+                      onClick={() => setValue('projectCount', formData.projectCount + 1, { shouldValidate: true })}
+                    >
                       <Upload className="mr-2 h-4 w-4" />
                       Agregar proyecto
                     </Button>
+                    {errors.projectCount && (
+                      <p className="mt-2 text-xs text-destructive flex items-center justify-center gap-1">
+                        <AlertCircle className="h-3 w-3" /> {errors.projectCount.message}
+                      </p>
+                    )}
                   </div>
 
                   <div className="flex items-center justify-between rounded-lg bg-muted/50 p-4">
@@ -465,24 +532,32 @@ export default function RegistroProfesionalPage() {
                     </h4>
                     <div className="space-y-4">
                       <div>
-                        <Label htmlFor="instagram">Instagram profesional</Label>
+                        <Label htmlFor="instagram" className={errors.instagramLink ? 'text-destructive' : ''}>Instagram profesional</Label>
                         <Input
                           id="instagram"
-                          placeholder="@tuusuario"
-                          value={formData.instagramLink}
-                          onChange={(e) => updateForm('instagramLink', e.target.value)}
-                          className="mt-2"
+                          placeholder="https://instagram.com/tuusuario"
+                          {...register('instagramLink')}
+                          className={`mt-2 ${errors.instagramLink ? 'border-destructive focus-visible:ring-destructive' : ''}`}
                         />
+                        {errors.instagramLink && (
+                          <p className="mt-1 text-xs text-destructive flex items-center gap-1">
+                            <AlertCircle className="h-3 w-3" /> {errors.instagramLink.message}
+                          </p>
+                        )}
                       </div>
                       <div>
-                        <Label htmlFor="facebook">Facebook profesional</Label>
+                        <Label htmlFor="facebook" className={errors.facebookLink ? 'text-destructive' : ''}>Facebook profesional</Label>
                         <Input
                           id="facebook"
-                          placeholder="URL de tu página"
-                          value={formData.facebookLink}
-                          onChange={(e) => updateForm('facebookLink', e.target.value)}
-                          className="mt-2"
+                          placeholder="https://facebook.com/tupagina"
+                          {...register('facebookLink')}
+                          className={`mt-2 ${errors.facebookLink ? 'border-destructive focus-visible:ring-destructive' : ''}`}
                         />
+                        {errors.facebookLink && (
+                          <p className="mt-1 text-xs text-destructive flex items-center gap-1">
+                            <AlertCircle className="h-3 w-3" /> {errors.facebookLink.message}
+                          </p>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -501,84 +576,125 @@ export default function RegistroProfesionalPage() {
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div>
-                    <Label htmlFor="city">Ciudad principal *</Label>
-                    <Select
-                      value={formData.city}
-                      onValueChange={(value) => {
-                        updateForm('city', value)
-                        updateForm('selectedZones', [])
-                      }}
-                    >
-                      <SelectTrigger id="city" className="mt-2">
-                        <SelectValue placeholder="Selecciona tu ciudad" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="CDMX">CDMX</SelectItem>
-                        <SelectItem value="Guadalajara">Guadalajara</SelectItem>
-                        <SelectItem value="Monterrey">Monterrey</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <Label htmlFor="city" className={errors.city ? 'text-destructive' : ''}>Ciudad principal *</Label>
+                    <Controller
+                      name="city"
+                      control={control}
+                      render={({ field }) => (
+                        <Select
+                          value={field.value}
+                          onValueChange={(val) => {
+                            field.onChange(val)
+                            setValue('selectedZones', [], { shouldValidate: true })
+                          }}
+                        >
+                          <SelectTrigger id="city" className={`mt-2 ${errors.city ? 'border-destructive' : ''}`}>
+                            <SelectValue placeholder="Selecciona tu ciudad" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="CDMX">CDMX</SelectItem>
+                            <SelectItem value="Guadalajara">Guadalajara</SelectItem>
+                            <SelectItem value="Monterrey">Monterrey</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      )}
+                    />
+                    {errors.city && (
+                      <p className="mt-1 text-xs text-destructive flex items-center gap-1">
+                        <AlertCircle className="h-3 w-3" /> {errors.city.message}
+                      </p>
+                    )}
                   </div>
 
                   {formData.city && (
                     <div>
-                      <Label>Zonas de cobertura *</Label>
+                      <Label className={errors.selectedZones ? 'text-destructive' : ''}>Zonas de cobertura *</Label>
                       <p className="text-sm text-muted-foreground mb-3">
                         Selecciona las zonas donde puedes trabajar
                       </p>
                       <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-                        {ZONES_BY_CITY[formData.city as keyof typeof ZONES_BY_CITY]?.map((zone) => (
-                          <div
-                            key={zone}
-                            onClick={() => toggleZone(zone)}
-                            className={`cursor-pointer rounded-lg border p-3 text-center text-sm transition-colors ${
-                              formData.selectedZones.includes(zone)
-                                ? 'border-primary bg-primary/10 text-primary'
-                                : 'border-border hover:border-primary/50'
-                            }`}
-                          >
-                            {zone}
-                          </div>
-                        ))}
+                        {ZONES_BY_CITY[formData.city as keyof typeof ZONES_BY_CITY]?.map((zone) => {
+                          const isSelected = formData.selectedZones.includes(zone)
+                          return (
+                            <div
+                              key={zone}
+                              onClick={() => {
+                                const newZones = isSelected
+                                  ? formData.selectedZones.filter((z) => z !== zone)
+                                  : [...formData.selectedZones, zone]
+                                setValue('selectedZones', newZones, { shouldValidate: true })
+                              }}
+                              className={`cursor-pointer rounded-lg border p-3 text-center text-sm transition-colors ${
+                                isSelected
+                                  ? 'border-primary bg-primary/10 text-primary'
+                                  : 'border-border hover:border-primary/50'
+                              } ${errors.selectedZones ? 'border-destructive' : ''}`}
+                            >
+                              {zone}
+                            </div>
+                          )
+                        })}
                       </div>
+                      {errors.selectedZones && (
+                        <p className="mt-1 text-xs text-destructive flex items-center gap-1">
+                          <AlertCircle className="h-3 w-3" /> {errors.selectedZones.message}
+                        </p>
+                      )}
                     </div>
                   )}
 
                   <div>
-                    <Label htmlFor="hourlyRate">Tarifa por hora aproximada (MXN) *</Label>
+                    <Label htmlFor="hourlyRate" className={errors.hourlyRate ? 'text-destructive' : ''}>Tarifa por hora aproximada (MXN) *</Label>
                     <Input
                       id="hourlyRate"
                       type="number"
                       placeholder="350"
-                      value={formData.hourlyRate}
-                      onChange={(e) => updateForm('hourlyRate', e.target.value)}
-                      className="mt-2"
+                      {...register('hourlyRate')}
+                      className={`mt-2 ${errors.hourlyRate ? 'border-destructive focus-visible:ring-destructive' : ''}`}
                     />
                     <p className="mt-1 text-xs text-muted-foreground">
                       Puedes ajustar esto después según el proyecto
                     </p>
+                    {errors.hourlyRate && (
+                      <p className="mt-1 text-xs text-destructive flex items-center gap-1">
+                        <AlertCircle className="h-3 w-3" /> {errors.hourlyRate.message}
+                      </p>
+                    )}
                   </div>
 
                   <div>
-                    <Label>Disponibilidad general</Label>
+                    <Label className={errors.availability ? 'text-destructive' : ''}>Disponibilidad general</Label>
                     <p className="text-sm text-muted-foreground mb-3">
                       Selecciona los días que normalmente trabajas
                     </p>
                     <div className="flex flex-wrap gap-2">
-                      {['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'].map((day) => (
-                        <div
-                          key={day}
-                          onClick={() => toggleAvailability(day)}
-                          className={`cursor-pointer rounded-lg border px-4 py-2 text-sm transition-colors ${
-                            formData.availability.includes(day)
-                              ? 'border-primary bg-primary/10 text-primary'
-                              : 'border-border hover:border-primary/50'
-                          }`}
-                        >
-                          {day}
-                        </div>
-                      ))}
+                      {['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'].map((day) => {
+                        const isAvailable = formData.availability.includes(day)
+                        return (
+                          <div
+                            key={day}
+                            onClick={() => {
+                              const newAvailability = isAvailable
+                                ? formData.availability.filter((d) => d !== day)
+                                : [...formData.availability, day]
+                              setValue('availability', newAvailability, { shouldValidate: true })
+                            }}
+                            className={`cursor-pointer rounded-lg border px-4 py-2 text-sm transition-colors ${
+                              isAvailable
+                                ? 'border-primary bg-primary/10 text-primary'
+                                : 'border-border hover:border-primary/50'
+                            } ${errors.availability ? 'border-destructive' : ''}`}
+                          >
+                            {day}
+                          </div>
+                        )
+                      })}
                     </div>
+                    {errors.availability && (
+                      <p className="mt-1 text-xs text-destructive flex items-center gap-1">
+                        <AlertCircle className="h-3 w-3" /> {errors.availability.message}
+                      </p>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -605,6 +721,10 @@ export default function RegistroProfesionalPage() {
                         <div className="flex justify-between">
                           <span className="text-muted-foreground">Email:</span>
                           <span className="font-medium">{formData.email}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Teléfono:</span>
+                          <span className="font-medium">{formData.countryCode} {formData.phone}</span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-muted-foreground">Especialidad:</span>
@@ -680,15 +800,31 @@ export default function RegistroProfesionalPage() {
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <Checkbox
-                      id="terms"
-                      checked={formData.acceptTerms}
-                      onCheckedChange={(checked) => updateForm('acceptTerms', checked as boolean)}
+                    <Controller
+                      name="acceptTerms"
+                      control={control}
+                      render={({ field }) => (
+                        <div className="flex flex-col gap-1">
+                          <div className="flex items-start gap-3">
+                            <Checkbox
+                              id="terms"
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                              className={errors.acceptTerms ? 'border-destructive' : ''}
+                            />
+                            <label htmlFor="terms" className={`text-sm cursor-pointer ${errors.acceptTerms ? 'text-destructive' : 'text-muted-foreground'}`}>
+                              Acepto los <Link href="/terminos" className="text-primary hover:underline">Términos de Servicio</Link> y 
+                              la <Link href="/privacidad" className="text-primary hover:underline">Política de Privacidad</Link> de FixablyMX.
+                            </label>
+                          </div>
+                          {errors.acceptTerms && (
+                            <p className="mt-1 text-xs text-destructive flex items-center gap-1">
+                              <AlertCircle className="h-3 w-3" /> {errors.acceptTerms.message}
+                            </p>
+                          )}
+                        </div>
+                      )}
                     />
-                    <label htmlFor="terms" className="text-sm text-muted-foreground cursor-pointer">
-                      Acepto los <Link href="/terminos" className="text-primary hover:underline">Términos de Servicio</Link> y 
-                      la <Link href="/privacidad" className="text-primary hover:underline">Política de Privacidad</Link> de FixablyMX.
-                    </label>
                   </div>
                 </CardContent>
               </Card>
@@ -698,22 +834,24 @@ export default function RegistroProfesionalPage() {
             <div className="mt-6 flex items-center justify-between">
               <Button
                 variant="outline"
+                type="button"
                 onClick={handleBack}
-                disabled={step === 1}
+                disabled={step === 1 || isSubmitting}
               >
                 <ChevronLeft className="mr-2 h-4 w-4" />
                 Atrás
               </Button>
 
               {step < 5 ? (
-                <Button onClick={handleNext} disabled={!canProceed()}>
+                <Button type="button" onClick={handleNext}>
                   Siguiente
                   <ChevronRight className="ml-2 h-4 w-4" />
                 </Button>
               ) : (
                 <Button
-                  onClick={handleSubmit}
-                  disabled={!formData.acceptTerms || isSubmitting}
+                  type="button"
+                  onClick={handleSubmit(onFinalSubmit)}
+                  disabled={isSubmitting}
                 >
                   {isSubmitting ? 'Enviando...' : 'Enviar solicitud'}
                 </Button>
