@@ -1,6 +1,9 @@
 # 🛠️ Fixably-MX (PWA)
 
 
+Fixably-MX es un **marketplace vertical** diseñado exclusivamente para el sector de la **construcción, remodelación y oficios especializados** en México.
+
+
 ## 🗺️ Roadmap de Desarrollo
 
 ### 📍 Fase 1 – MVP (Estado Actual: 🟡 En Desarrollo)
@@ -8,7 +11,7 @@
 - [x] Buscador con filtros funcionales (Mock Data).
 - [x] Perfil de profesional dinámico.
 - [x] Formulario de solicitud de proyecto.
-- [ ] Conexión con Supabase para datos reales.
+- [x] Conexión con Supabase para datos reales.
 - [ ] Sistema de Autenticación (Auth.js / Supabase Auth).
 
 ### 📍 Fase 2 – Validación y Lanzamiento
