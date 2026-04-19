@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ChevronLeft, ChevronRight, Check, Upload, User, FileCheck, MapPin, FolderOpen, ClipboardCheck, AlertCircle, Shield, CheckCircle2, Clock, BadgeCheck, Lock } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Check, Upload, User, FileCheck, MapPin, FolderOpen, ClipboardCheck, AlertCircle, Shield, CheckCircle2, Clock, BadgeCheck, Lock, Eye, EyeOff } from 'lucide-react'
 import { registrationSchema, type RegistrationFormData } from '@/lib/validations'
 import { registerProfessionalAction } from '@/lib/actions/auth'
 import { toast } from 'sonner'
@@ -85,6 +85,7 @@ export default function RegistroProfesionalPage() {
   const [step, setStep] = useState<Step>(1)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isComplete, setIsComplete] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
 
   const {
     register,
@@ -413,15 +414,22 @@ export default function RegistroProfesionalPage() {
                   <div>
                     <Label htmlFor="password" className={errors.password ? 'text-destructive' : ''}>Contraseña de acceso *</Label>
                     <div className="relative group mt-2">
-                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground transition-colors group-focus-within:text-primary" />
-                      <Input
-                        id="password"
-                        type="password"
-                        placeholder="Mínimo 8 caracteres, una mayúscula y un número"
-                        {...register('password')}
-                        className={`pl-10 h-11 bg-muted/20 border-border focus-visible:ring-primary ${errors.password ? "border-destructive focus-visible:ring-destructive" : ""}`}
-                      />
-                    </div>
+                       <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground transition-colors group-focus-within:text-primary" />
+                       <Input
+                         id="password"
+                         type={showPassword ? "text" : "password"}
+                         placeholder="Mínimo 8 caracteres, una mayúscula y un número"
+                         {...register('password')}
+                         className={`pl-10 pr-10 h-11 bg-muted/20 border-border focus-visible:ring-primary ${errors.password ? "border-destructive focus-visible:ring-destructive" : ""}`}
+                       />
+                       <button
+                         type="button"
+                         onClick={() => setShowPassword(!showPassword)}
+                         className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground focus:outline-none"
+                       >
+                         {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                       </button>
+                     </div>
                     {errors.password && (
                       <p className="mt-1 text-xs text-destructive flex items-center gap-1">
                         <AlertCircle className="h-3 w-3" /> {errors.password.message}
@@ -827,8 +835,8 @@ export default function RegistroProfesionalPage() {
                               className={errors.acceptTerms ? 'border-destructive' : ''}
                             />
                             <label htmlFor="terms" className={`text-sm cursor-pointer ${errors.acceptTerms ? 'text-destructive' : 'text-muted-foreground'}`}>
-                              Acepto los <Link href="/terminos" className="text-primary hover:underline">Términos de Servicio</Link> y 
-                              la <Link href="/privacidad" className="text-primary hover:underline">Política de Privacidad</Link> de FixablyMX.
+                              Acepto los <Link href="/terminos" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Términos de Servicio</Link> y 
+                              la <Link href="/privacidad" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Política de Privacidad</Link> de FixablyMX.
                             </label>
                           </div>
                           {errors.acceptTerms && (
