@@ -1,33 +1,12 @@
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
+import { type NextRequest } from 'next/server'
+import { updateSession } from './lib/supabase/middleware'
 
 /**
- * Middleware de seguridad para Fixably-MX.
- * Implementa la protección contra "Broken Access Control" mediante la redirección
- * de usuarios no autenticados en rutas protegidas.
+ * Middleware de seguridad para Fixably-MX (Integración Supabase SSR).
+ * Delega la validación y refresco de sesión a la utilidad de Supabase.
  */
-export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl
-
-  // 1. Definir rutas protegidas
-  const isDashboardRoute = pathname.startsWith('/dashboard')
-
-  if (isDashboardRoute) {
-    /**
-     * NOTA: Actualmente usamos un placeholder de cookie ('fixably-auth').
-     * En la fase de integración con Supabase, esto se sustituirá por la sesión real.
-     */
-    const authToken = request.cookies.get('fixably-auth')
-
-    if (!authToken) {
-      // Redirigir al login si no hay token, guardando la ruta de origen
-      const loginUrl = new URL('/login', request.url)
-      loginUrl.searchParams.set('redirect', pathname)
-      return NextResponse.redirect(loginUrl)
-    }
-  }
-
-  return NextResponse.next()
+export async function middleware(request: NextRequest) {
+  return await updateSession(request)
 }
 
 // Configuración del matcher para aplicar el middleware solo a rutas relevantes

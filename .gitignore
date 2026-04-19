@@ -27,4 +27,9 @@ yarn-error.log*
 next-env.d.ts
 
 # UI/UX Pro Max (AI Skills) - Deletable once work is finished
-.ui-ux-pro-max/
+.ui-ux-pro-max/
+
+# Agent skills
+.agents/
+.supabase/
+.claude/
