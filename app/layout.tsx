@@ -1,4 +1,5 @@
 import React from "react"
+import { Toaster } from 'sonner'
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
@@ -44,6 +45,7 @@ export default function RootLayout({
         {children}
         <Footer />
         <Analytics />
+        <Toaster position="top-center" richColors />
       </body>
     </html>
   )

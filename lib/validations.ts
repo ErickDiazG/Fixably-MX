@@ -26,6 +26,11 @@ export const registrationSchema = z.object({
   experience: z
     .string({ required_error: 'Selecciona tu rango de experiencia' })
     .min(1, 'La experiencia es obligatoria'),
+  password: z
+    .string()
+    .min(8, 'La contraseña debe tener al menos 8 caracteres')
+    .regex(/[A-Z]/, 'Debe contener al menos una mayúscula')
+    .regex(/[0-9]/, 'Debe contener al menos un número'),
 
   // Paso 2: Verificación (Simulando uploads por ahora)
   ineUploaded: z

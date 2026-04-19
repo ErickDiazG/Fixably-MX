@@ -9,8 +9,9 @@ import {
   SheetContent,
   SheetTrigger,
 } from '@/components/ui/sheet'
-import { ClipboardList, Menu } from 'lucide-react'
+import { ClipboardList, Menu, LogOut } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
+import { logoutAction } from '@/lib/actions/auth'
 
 interface NavItem {
   href: string
@@ -70,6 +71,16 @@ export function DashboardSidebar({ items, title }: DashboardSidebarProps) {
             </p>
             <NavContent />
           </div>
+          <div className="mt-auto border-t border-border p-4">
+            <Button 
+              variant="ghost" 
+              className="w-full justify-start gap-3 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+              onClick={() => logoutAction()}
+            >
+              <LogOut className="h-4 w-4" />
+              Cerrar sesión
+            </Button>
+          </div>
         </div>
       </aside>
 
@@ -98,6 +109,16 @@ export function DashboardSidebar({ items, title }: DashboardSidebarProps) {
                 {title}
               </p>
               <NavContent />
+              <div className="mt-8 border-t border-border pt-4">
+                <Button 
+                  variant="ghost" 
+                  className="w-full justify-start gap-3 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                  onClick={() => logoutAction()}
+                >
+                  <LogOut className="h-4 w-4" />
+                  Cerrar sesión
+                </Button>
+              </div>
             </div>
           </SheetContent>
         </Sheet>

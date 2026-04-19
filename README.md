@@ -5,7 +5,7 @@
 
 ### 📍 Fase 1 – MVP (Estado Actual: 🟡 En Desarrollo)
 - [x] Arquitectura de páginas básica.
-- [] Buscador con filtros funcionales (Mock Data).
+- [x] Buscador con filtros funcionales (Mock Data).
 - [x] Perfil de profesional dinámico.
 - [x] Formulario de solicitud de proyecto.
 - [ ] Conexión con Supabase para datos reales.

@@ -3,14 +3,17 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { useForm, Controller } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { ChevronLeft, ChevronRight, Check, Upload, User, FileCheck, MapPin, FolderOpen, ClipboardCheck, AlertCircle, Shield, CheckCircle2, Clock, BadgeCheck, Lock } from 'lucide-react'
 import { registrationSchema, type RegistrationFormData } from '@/lib/validations'
+import { registerProfessionalAction } from '@/lib/actions/auth'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { useForm, Controller } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
   Select,
@@ -19,23 +22,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { LOCATIONS } from '@/lib/types'
-import {
-  ChevronLeft,
-  ChevronRight,
-  Upload,
-  Check,
-  User,
-  FileCheck,
-  FolderOpen,
-  MapPin,
-  ClipboardCheck,
-  CheckCircle2,
-  Shield,
-  BadgeCheck,
-  Clock,
-  AlertCircle,
-} from 'lucide-react'
 
 type Step = 1 | 2 | 3 | 4 | 5
 
@@ -130,6 +116,7 @@ export default function RegistroProfesionalPage() {
       hourlyRate: '',
       availability: [],
       acceptTerms: false,
+      password: '',
     },
   })
 
@@ -139,7 +126,7 @@ export default function RegistroProfesionalPage() {
     let fieldsToValidate: (keyof RegistrationFormData)[] = []
     
     if (step === 1) {
-      fieldsToValidate = ['name', 'email', 'countryCode', 'phone', 'specialty', 'experience']
+      fieldsToValidate = ['name', 'email', 'countryCode', 'phone', 'specialty', 'experience', 'password']
     } else if (step === 2) {
       fieldsToValidate = ['ineUploaded', 'addressProofUploaded']
     } else if (step === 3) {
@@ -162,11 +149,19 @@ export default function RegistroProfesionalPage() {
 
   const onFinalSubmit = async (data: RegistrationFormData) => {
     setIsSubmitting(true)
-    // Simulación de guardado seguro
-    console.log('Datos validados y listos:', data)
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-    setIsSubmitting(false)
-    setIsComplete(true)
+    try {
+      const result = await registerProfessionalAction(data)
+      if (result.error) {
+        toast.error(result.error)
+      } else {
+        toast.success('¡Registro exitoso! Iniciando revisión...')
+        setIsComplete(true)
+      }
+    } catch (error) {
+      toast.error('Ocurrió un error inesperado al registrarte.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const steps = [
@@ -411,6 +406,25 @@ export default function RegistroProfesionalPage() {
                     {errors.experience && (
                       <p className="mt-1 text-xs text-destructive flex items-center gap-1">
                         <AlertCircle className="h-3 w-3" /> {errors.experience.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <Label htmlFor="password" className={errors.password ? 'text-destructive' : ''}>Contraseña de acceso *</Label>
+                    <div className="relative group mt-2">
+                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground transition-colors group-focus-within:text-primary" />
+                      <Input
+                        id="password"
+                        type="password"
+                        placeholder="Mínimo 8 caracteres, una mayúscula y un número"
+                        {...register('password')}
+                        className={`pl-10 h-11 bg-muted/20 border-border focus-visible:ring-primary ${errors.password ? "border-destructive focus-visible:ring-destructive" : ""}`}
+                      />
+                    </div>
+                    {errors.password && (
+                      <p className="mt-1 text-xs text-destructive flex items-center gap-1">
+                        <AlertCircle className="h-3 w-3" /> {errors.password.message}
                       </p>
                     )}
                   </div>

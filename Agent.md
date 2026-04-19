@@ -37,7 +37,7 @@ Actúa como un **Senior Fullstack Developer y Product Manager** potenciado por *
 | Iconos | **lucide-react** |
 | Branding | Desarrollado por **DevDiaz Labs** |
 
-**Persistencia:** Prevista con **Supabase**. Hasta que no existan variables de entorno y cliente oficial en el repo, tratar datos como **Mock** (`lib/mock-data.ts`).
+**Persistencia:** Implementada con **Supabase**. Ya existen variables de entorno y cliente oficial en `lib/supabase/`. Los datos se están migrando de mocks (`lib/mock-data.ts`) a tablas reales en Postgres.
 
 ### 5. Arquitectura — Next.js App Router
 - **`app/`**: Rutas y Server Components. **Preferir Server Components** por defecto. Usar `'use client'` solo cuando haya hooks o interactividad compleja.
