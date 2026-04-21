@@ -6,7 +6,7 @@ Fixably-MX es un **marketplace vertical** diseñado exclusivamente para el secto
 
 ## 🗺️ Roadmap de Desarrollo
 
-### 📍 Fase 1 – MVP & Trust Foundation (Estado Actual: 🟡 En Desarrollo)
+### 📍 Fase 1 – MVP (Estado Actual: 🟡 En Desarrollo)
 - [x] Arquitectura de páginas básica.
 - [x] Buscador con filtros funcionales (Mock Data).
 - [x] Perfil de profesional dinámico.

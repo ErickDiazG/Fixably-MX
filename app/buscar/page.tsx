@@ -24,7 +24,7 @@ import {
 } from '@/components/ui/sheet'
 import { Badge } from '@/components/ui/badge'
 import { professionals } from '@/lib/mock-data'
-import { PROJECT_TYPES, LOCATIONS } from '@/lib/types'
+import { LOCATIONS } from '@/lib/types'
 import { Search, SlidersHorizontal, X, MapPin } from 'lucide-react'
 
 const SPECIALTIES = [

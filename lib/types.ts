@@ -114,3 +114,36 @@ export const BUDGET_RANGES = [
   '$25,000 - $50,000 MXN',
   '$50,000+ MXN',
 ]
+
+export const LOCATIONS = [
+  'Polanco',
+  'Condesa',
+  'Roma Norte',
+  'Roma Sur',
+  'Coyoacán',
+  'Del Valle',
+  'Santa Fe',
+  'Interlomas',
+  'Satélite',
+  'Nápoles',
+  'San Ángel',
+  'Juárez',
+  'Cuauhtémoc',
+  'Anzures',
+  'Lomas de Chapultepec',
+]
+
+export const PROJECT_TYPES = [
+  'Electricidad',
+  'Fontanería / Plomería',
+  'Albañilería y Construcción',
+  'Pintura y Acabados',
+  'Carpintería',
+  'HVAC / Aire Acondicionado',
+  'Herrería',
+  'Remodelación Completa',
+  'Impermeabilización',
+  'Jardinería',
+  'Limpieza Profunda',
+  'Otros',
+]
