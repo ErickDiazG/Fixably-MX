@@ -26,7 +26,7 @@ export async function loginAction(formData: z.infer<typeof loginSchema>) {
 
   const supabase = await createClient()
 
-  const { error } = await supabase.auth.signInWithPassword({
+  const { data: authData, error } = await supabase.auth.signInWithPassword({
     email: validated.data.email,
     password: validated.data.password,
   })
@@ -35,8 +35,24 @@ export async function loginAction(formData: z.infer<typeof loginSchema>) {
     return { error: error.message }
   }
 
-  // Redirigir según el rol
-  if (validated.data.role === 'cliente') {
+  // Obtener el rol real del usuario desde la base de datos
+  // Esto es mucho más seguro que confiar en el tab de la UI
+  const { data: profileData, error: profileError } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', authData.user.id)
+    .single()
+    
+  if (profileError || !profileData) {
+     return { error: 'No se pudo verificar el perfil del usuario' }
+  }
+
+  const role = profileData.role
+
+  // Redirigir según el rol real de la DB
+  if (role === 'admin' || role === 'super_admin') {
+    redirect('/dashboard/admin')
+  } else if (role === 'client') {
     redirect('/dashboard/cliente')
   } else {
     redirect('/dashboard/profesional')
@@ -56,41 +72,71 @@ export async function logoutAction() {
  * Server Action para registrar un nuevo profesional
  * Involucra crear el usuario en Auth y poblar las tablas profiles/professionals
  */
-export async function registerProfessionalAction(data: any) {
+export async function registerProfessionalAction(data: RegistrationFormData) {
   const supabase = await createClient()
   
-  // 1. Validar datos con Zod en el servidor (Seguridad Pro)
+  // 1. Validar datos
   const validated = registrationSchema.safeParse(data)
   if (!validated.success) {
     return { error: 'Datos de validación inválidos' }
   }
 
-  const { name, email, password } = data
+  const { name, email, password, specialty, experience, hourlyRate, selectedZones } = data
 
-  // 2. Crear usuario en Auth (El Trigger en Postgres hará el resto atómicamente)
+  // 2. Crear usuario en Auth
+  // El Trigger 'handle_new_user' insertará automáticamente en 'public.profiles'
   const { data: authData, error: authError } = await supabase.auth.signUp({
     email,
-    password: password,
+    password,
     options: {
       data: {
         role: 'professional',
-        first_name: name.split(' ')[0],
-        last_name: name.split(' ').slice(1).join(' '),
-        phone: data.phone,
-        specialty: data.specialty,
-        experience_range: data.experience,
-        city: data.city,
-        selected_zones: data.selectedZones,
-        hourly_rate: data.hourlyRate,
-        availability: data.availability,
-        instagram_link: data.instagramLink,
-        facebook_link: data.facebookLink
+        full_name: name,
+        phone: data.phone
       }
     }
   })
 
   if (authError) return { error: authError.message }
   if (!authData.user) return { error: 'No se pudo crear el usuario' }
+
+  const userId = authData.user.id
+
+  // 3. Insertar datos complementarios en Professionals
+  // Nota: Usamos el ID del usuario recién creado
+  const { error: proError } = await supabase
+    .from('professionals')
+    .insert({
+      id: userId,
+      experience_years: parseInt(experience),
+      hourly_rate: parseFloat(hourlyRate),
+      business_name: name // Por ahora usamos el nombre como nombre de negocio
+    })
+
+  if (proError) return { error: proError.message }
+
+  // 4. Insertar Relaciones (Categorías y Zonas)
+  // Categoría principal
+  const { error: catError } = await supabase
+    .from('professional_categories')
+    .insert({
+      professional_id: userId,
+      category_id: specialty
+    })
+
+  if (catError) return { error: catError.message }
+
+  // Zonas de cobertura
+  const zoneInserts = selectedZones.map(zoneId => ({
+    professional_id: userId,
+    zone_id: zoneId
+  }))
+
+  const { error: zoneError } = await supabase
+    .from('professional_zones')
+    .insert(zoneInserts)
+
+  if (zoneError) return { error: zoneError.message }
 
   return { success: true }
 }

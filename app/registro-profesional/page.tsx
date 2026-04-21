@@ -22,33 +22,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { createClient } from '@/lib/supabase/client'
+import { Category, ServiceZone } from '@/lib/types'
+import { useEffect } from 'react'
 
 type Step = 1 | 2 | 3 | 4 | 5
 
-const SPECIALTIES = [
-  'Electricista',
-  'Fontanero / Plomero',
-  'Albañil / Obra Civil',
-  'Pintor',
-  'Carpintero',
-  'HVAC / Climatización',
-  'Herrero / Soldador',
-  'Drywall / Plafones',
-]
-
-const EXPERIENCE_RANGES = [
-  '1-3 años',
-  '3-5 años',
-  '5-10 años',
-  '10-15 años',
-  '15+ años',
-]
-
-const ZONES_BY_CITY = {
-  CDMX: ['Polanco', 'Condesa', 'Roma', 'Coyoacán', 'Santa Fe', 'Del Valle', 'Nápoles', 'Centro'],
-  Guadalajara: ['Zapopan', 'Centro', 'Tlaquepaque', 'Providencia', 'Chapalita'],
-  Monterrey: ['San Pedro', 'Centro', 'Cumbres', 'Contry', 'Valle'],
-}
+// Las especialidades y zonas ahora se cargan dinámicamente desde Supabase
 
 interface FormData {
   // Step 1 - Basic Info
@@ -86,6 +66,35 @@ export default function RegistroProfesionalPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isComplete, setIsComplete] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+  
+  // Estado para datos dinámicos de Supabase
+  const [categories, setCategories] = useState<Category[]>([])
+  const [serviceZones, setServiceZones] = useState<ServiceZone[]>([])
+  const [isLoadingData, setIsLoadingData] = useState(true)
+
+  const supabase = createClient()
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const [catRes, zoneRes] = await Promise.all([
+          supabase.from('categories').select('*').eq('is_active', true).order('name'),
+          supabase.from('service_zones').select('*').eq('is_active', true).order('city')
+        ])
+        
+        if (catRes.data) setCategories(catRes.data)
+        if (zoneRes.data) setServiceZones(zoneRes.data)
+      } catch (error) {
+        console.error('Error loading registration data:', error)
+      } finally {
+        setIsLoadingData(false)
+      }
+    }
+    loadData()
+  }, [])
+
+  // Ciudades únicas para el selector
+  const availableCities = Array.from(new Set(serviceZones.map(z => z.city)))
 
   const {
     register,
@@ -362,12 +371,12 @@ export default function RegistroProfesionalPage() {
                           onValueChange={field.onChange}
                         >
                           <SelectTrigger id="specialty" className={`mt-2 ${errors.specialty ? 'border-destructive' : ''}`}>
-                            <SelectValue placeholder="Selecciona tu especialidad" />
+                            <SelectValue placeholder={isLoadingData ? "Cargando..." : "Selecciona tu especialidad"} />
                           </SelectTrigger>
                           <SelectContent>
-                            {SPECIALTIES.map((spec) => (
-                              <SelectItem key={spec} value={spec}>
-                                {spec}
+                            {categories.map((cat) => (
+                              <SelectItem key={cat.id} value={cat.id}>
+                                {cat.name}
                               </SelectItem>
                             ))}
                           </SelectContent>
@@ -392,12 +401,12 @@ export default function RegistroProfesionalPage() {
                           onValueChange={field.onChange}
                         >
                           <SelectTrigger id="experience" className={`mt-2 ${errors.experience ? 'border-destructive' : ''}`}>
-                            <SelectValue placeholder="Selecciona rango" />
+                            <SelectValue placeholder="Selecciona años de experiencia" />
                           </SelectTrigger>
                           <SelectContent>
-                            {EXPERIENCE_RANGES.map((range) => (
-                              <SelectItem key={range} value={range}>
-                                {range}
+                            {[1, 2, 3, 5, 8, 10, 15, 20].map((years) => (
+                              <SelectItem key={years} value={years.toString()}>
+                                {years} {years === 1 ? 'año' : 'años'}
                               </SelectItem>
                             ))}
                           </SelectContent>
@@ -611,12 +620,12 @@ export default function RegistroProfesionalPage() {
                           }}
                         >
                           <SelectTrigger id="city" className={`mt-2 ${errors.city ? 'border-destructive' : ''}`}>
-                            <SelectValue placeholder="Selecciona tu ciudad" />
+                            <SelectValue placeholder={isLoadingData ? "Cargando..." : "Selecciona tu ciudad"} />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="CDMX">CDMX</SelectItem>
-                            <SelectItem value="Guadalajara">Guadalajara</SelectItem>
-                            <SelectItem value="Monterrey">Monterrey</SelectItem>
+                            {availableCities.map((city) => (
+                              <SelectItem key={city} value={city}>{city}</SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                       )}
@@ -635,27 +644,29 @@ export default function RegistroProfesionalPage() {
                         Selecciona las zonas donde puedes trabajar
                       </p>
                       <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-                        {ZONES_BY_CITY[formData.city as keyof typeof ZONES_BY_CITY]?.map((zone) => {
-                          const isSelected = formData.selectedZones.includes(zone)
-                          return (
-                            <div
-                              key={zone}
-                              onClick={() => {
-                                const newZones = isSelected
-                                  ? formData.selectedZones.filter((z) => z !== zone)
-                                  : [...formData.selectedZones, zone]
-                                setValue('selectedZones', newZones, { shouldValidate: true })
-                              }}
-                              className={`cursor-pointer rounded-lg border p-3 text-center text-sm transition-colors ${
-                                isSelected
-                                  ? 'border-primary bg-primary/10 text-primary'
-                                  : 'border-border hover:border-primary/50'
-                              } ${errors.selectedZones ? 'border-destructive' : ''}`}
-                            >
-                              {zone}
-                            </div>
-                          )
-                        })}
+                        {serviceZones
+                          .filter((z) => z.city === formData.city)
+                          .map((zone) => {
+                            const isSelected = formData.selectedZones.includes(zone.id)
+                            return (
+                              <div
+                                key={zone.id}
+                                onClick={() => {
+                                  const newZones = isSelected
+                                    ? formData.selectedZones.filter((id) => id !== zone.id)
+                                    : [...formData.selectedZones, zone.id]
+                                  setValue('selectedZones', newZones, { shouldValidate: true })
+                                }}
+                                className={`cursor-pointer rounded-lg border p-3 text-center text-sm transition-colors ${
+                                  isSelected
+                                    ? 'border-primary bg-primary/10 text-primary'
+                                    : 'border-border hover:border-primary/50'
+                                } ${errors.selectedZones ? 'border-destructive' : ''}`}
+                              >
+                                {zone.neighborhood}
+                              </div>
+                            )
+                          })}
                       </div>
                       {errors.selectedZones && (
                         <p className="mt-1 text-xs text-destructive flex items-center gap-1">

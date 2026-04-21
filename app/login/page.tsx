@@ -55,20 +55,13 @@ export default function LoginPage() {
 
   const onSubmit = async (data: LoginFormValues) => {
     setIsLoading(true);
-    try {
-      const result = await loginAction({
-        ...data,
-        role: activeTab as 'cliente' | 'profesional',
-      });
+    const result = await loginAction({
+      ...data,
+      role: activeTab as 'cliente' | 'profesional',
+    });
 
-      if (result?.error) {
-        toast.error(result.error);
-      } else {
-        toast.success("¡Sesión iniciada correctamente!");
-      }
-    } catch (error) {
-      toast.error("Ocurrió un error inesperado al iniciar sesión.");
-    } finally {
+    if (result?.error) {
+      toast.error(result.error);
       setIsLoading(false);
     }
   };

@@ -82,16 +82,21 @@ export function TestimonialsSection() {
               <ChevronLeft className="h-4 w-4" />
             </Button>
 
-            <div className="flex gap-2">
+            <div className="flex gap-1">
               {testimonials.map((_, i) => (
                 <button
                   key={i}
                   onClick={() => setCurrent(i)}
-                  className={`h-2 w-2 rounded-full transition-colors ${
-                    i === current ? 'bg-primary' : 'bg-muted-foreground/30'
-                  }`}
+                  className="flex h-8 w-8 items-center justify-center rounded-full transition-colors hover:bg-muted"
                   aria-label={`Ir a testimonio ${i + 1}`}
-                />
+                  aria-current={i === current ? 'true' : undefined}
+                >
+                  <span
+                    className={`block h-2 w-2 rounded-full transition-colors ${
+                      i === current ? 'bg-primary' : 'bg-muted-foreground/30'
+                    }`}
+                  />
+                </button>
               ))}
             </div>
 

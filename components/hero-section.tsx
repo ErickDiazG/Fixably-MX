@@ -12,13 +12,42 @@ import {
 } from '@/components/ui/select'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Search, Shield, BadgeCheck } from 'lucide-react'
-import { PROJECT_TYPES, LOCATIONS } from '@/lib/types'
+import { createClient } from '@/lib/supabase/client'
+import { Category, ServiceZone } from '@/lib/types'
+import { useEffect } from 'react'
 
 export function HeroSection() {
   const router = useRouter()
   const [projectType, setProjectType] = useState<string>('')
   const [location, setLocation] = useState<string>('')
   const [verifiedOnly, setVerifiedOnly] = useState(false)
+  
+  // Datos dinámicos de Supabase V2
+  const [categories, setCategories] = useState<Category[]>([])
+  const [serviceZones, setServiceZones] = useState<ServiceZone[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const supabase = createClient()
+        const [catRes, zoneRes] = await Promise.all([
+          supabase.from('categories').select('*').eq('is_active', true).order('name'),
+          supabase.from('service_zones').select('*').eq('is_active', true).order('city')
+        ])
+        
+        if (catRes.data) setCategories(catRes.data)
+        if (zoneRes.data) setServiceZones(zoneRes.data)
+      } catch (error) {
+        console.error('Error loading search data:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    loadData()
+  }, [])
+
+  const availableCities = Array.from(new Set(serviceZones.map(z => z.city)))
 
   const handleSearch = () => {
     const params = new URLSearchParams()
@@ -59,13 +88,13 @@ export function HeroSection() {
                   1. REQUERIMIENTO
                 </label>
                 <Select value={projectType} onValueChange={setProjectType}>
-                  <SelectTrigger className="h-12">
-                    <SelectValue placeholder="Selecciona un servicio" />
+                  <SelectTrigger className="h-12" aria-label="Selecciona un tipo de servicio">
+                    <SelectValue placeholder={isLoading ? "Cargando..." : "Selecciona un servicio"} />
                   </SelectTrigger>
                   <SelectContent>
-                    {PROJECT_TYPES.map((type) => (
-                      <SelectItem key={type} value={type}>
-                        {type}
+                    {categories.map((cat) => (
+                      <SelectItem key={cat.id} value={cat.slug}>
+                        {cat.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -77,13 +106,13 @@ export function HeroSection() {
                   2. UBICACIÓN
                 </label>
                 <Select value={location} onValueChange={setLocation}>
-                  <SelectTrigger className="h-12">
-                    <SelectValue placeholder="Selecciona zona" />
+                  <SelectTrigger className="h-12" aria-label="Selecciona una zona o ubicación">
+                    <SelectValue placeholder={isLoading ? "Cargando..." : "Selecciona zona"} />
                   </SelectTrigger>
                   <SelectContent>
-                    {LOCATIONS.map((loc) => (
-                      <SelectItem key={loc} value={loc}>
-                        {loc}
+                    {availableCities.map((city) => (
+                      <SelectItem key={city} value={city}>
+                        {city}
                       </SelectItem>
                     ))}
                   </SelectContent>

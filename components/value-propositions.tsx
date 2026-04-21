@@ -31,9 +31,9 @@ export function ValuePropositions() {
               <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10 transition-colors group-hover:bg-primary/20">
                 <prop.icon className="h-7 w-7 text-primary" />
               </div>
-              <h3 className="mb-2 text-xl font-semibold text-foreground">
+              <h2 className="mb-2 text-xl font-semibold text-foreground">
                 {prop.title}
-              </h3>
+              </h2>
               <p className="text-muted-foreground leading-relaxed">
                 {prop.description}
               </p>

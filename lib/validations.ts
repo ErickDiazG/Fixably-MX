@@ -22,10 +22,10 @@ export const registrationSchema = z.object({
     .length(10, 'El teléfono debe tener exactamente 10 dígitos'),
   specialty: z
     .string({ required_error: 'Selecciona una especialidad' })
-    .min(1, 'La especialidad es obligatoria'),
+    .uuid('ID de especialidad inválido'),
   experience: z
-    .string({ required_error: 'Selecciona tu rango de experiencia' })
-    .min(1, 'La experiencia es obligatoria'),
+    .string({ required_error: 'Introduce tus años de experiencia' })
+    .refine(val => !isNaN(Number(val)) && Number(val) >= 0, 'Años de experiencia debe ser un número'),
   password: z
     .string()
     .min(8, 'La contraseña debe tener al menos 8 caracteres')

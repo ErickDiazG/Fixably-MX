@@ -6,23 +6,26 @@ Fixably-MX es un **marketplace vertical** diseñado exclusivamente para el secto
 
 ## 🗺️ Roadmap de Desarrollo
 
-### 📍 Fase 1 – MVP (Estado Actual: 🟡 En Desarrollo)
+### 📍 Fase 1 – MVP & Trust Foundation (Estado Actual: 🟡 En Desarrollo)
 - [x] Arquitectura de páginas básica.
 - [x] Buscador con filtros funcionales (Mock Data).
 - [x] Perfil de profesional dinámico.
-- [x] Formulario de solicitud de proyecto.
 - [x] Conexión con Supabase para datos reales.
-- [ ] Sistema de Autenticación (Auth.js / Supabase Auth).
+- [ ] **Sistema de Autenticación con Roles:** Diferenciación entre Clientes y Profesionales.
+- [ ] **Portafolio Visual:** Carga de fotos de trabajos anteriores por parte de los profesionales.
+- [ ] **Sistema de Reseñas Inicial:** Calificación por estrellas y comentarios simples.
 
-### 📍 Fase 2 – Validación y Lanzamiento
-- [ ] Sistema de mensajería en tiempo real.
-- [ ] Proceso de carga de documentos para verificación.
-- [ ] Dashboard de administrador para moderar perfiles.
+### 📍 Fase 2 – Operación y Seguridad (Validación y Lanzamiento)
+- [ ] **Mensajería en tiempo real:** Chat interno para evitar fuga de contactos tempranos.
+- [ ] **Verificación Avanzada:** Carga de documentos (INE, Comprobante) y validación de identidad.
+- [ ] **Geolocalización por Radio:** Búsqueda de servicios en un radio de acción específico (ej. 10km).
+- [ ] Dashboard de administrador para moderar perfiles y validar documentos.
 
-### 📍 Fase 3 – Crecimiento
-- [ ] Integración de pagos (Stripe / Mercado Pago).
-- [ ] Notificaciones por WhatsApp (Twilio).
-- [ ] App Móvil nativa.
+### 📍 Fase 3 – Transacción y Crecimiento (Escalabilidad)
+- [ ] **Pagos con Escrow:** Integración de Stripe/Mercado Pago para retener pagos hasta fin de obra.
+- [ ] **Flujo de Cotizaciones:** Proceso formal de Solicitud -> Presupuesto -> Aceptación.
+- [ ] **Notificaciones Push/WhatsApp:** Alertar a pros sobre nuevos leads de inmediato.
+- [ ] App Móvil nativa (vía PWA con Service Workers o Capacitor).
 
 ---
 

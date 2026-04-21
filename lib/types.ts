@@ -1,127 +1,113 @@
-export interface Professional {
+/**
+ * ========================================================
+ * FIXABLY-MX TYPES (Arquitectura Relacional V2)
+ * ========================================================
+ * Estos tipos reflejan exactamente la estructura de la 
+ * base de datos en Supabase para asegurar consistencia.
+ */
+
+export type UserRole = 'client' | 'professional' | 'admin' | 'super_admin'
+
+export interface Profile {
+  id: string
+  role: UserRole
+  full_name: string | null
+  phone: string | null
+  avatar_url: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface Category {
   id: string
   name: string
-  specialty: string
+  slug: string
+  icon_name: string | null
+  is_active: boolean
+}
+
+export interface ServiceZone {
+  id: string
+  city: string
+  neighborhood: string
+  postal_code: string | null
+  is_active: boolean
+}
+
+export interface Professional {
+  id: string
+  business_name: string | null
+  bio_description: string | null
+  experience_years: number
+  hourly_rate: number | null
+  is_verified: boolean
+  verification_status: 'pending' | 'verified' | 'rejected'
   rating: number
-  reviewCount: number
-  experience: number
-  verified: boolean
-  licensed: boolean
-  zones: string[]
-  responseTime: string
-  profileImage: string
-  portfolioCount: number
-  description?: string
-  email?: string
-  phone?: string
-  languages?: string[]
-  equipment?: string[]
-  availability?: Record<string, boolean>
-  hourlyRate?: number
+  review_count: number
+  completed_jobs: number
+  ine_url: string | null
+  proof_of_address_url: string | null
+  created_at: string
+  updated_at: string
+  
+  // Tipos para joins (opcionales al consultar)
+  profile?: Profile
+  categories?: Category[]
+  zones?: ServiceZone[]
+}
+
+export type ProjectStatus = 'draft' | 'published' | 'in_progress' | 'completed' | 'cancelled'
+
+export interface Project {
+  id: string
+  client_id: string
+  category_id: string
+  zone_id: string
+  title: string
+  description: string
+  budget_range: string | null
+  status: ProjectStatus
+  created_at: string
+  updated_at: string
+  
+  // Relaciones
+  category?: Category
+  zone?: ServiceZone
+  client?: Profile
+}
+
+export type ProposalStatus = 'pending' | 'accepted' | 'rejected'
+
+export interface Proposal {
+  id: string
+  project_id: string
+  professional_id: string
+  estimated_price: number
+  message: string
+  status: ProposalStatus
+  created_at: string
+  
+  // Relaciones
+  professional?: Professional & { profile: Profile }
 }
 
 export interface Review {
   id: string
-  professionalId: string
-  clientId: string
-  clientName: string
-  clientImage?: string
-  projectType: string
-  ratings: {
-    quality: number
-    timeliness: number
-    cleanliness: number
-    communication: number
-  }
-  comment: string
-  photos?: string[]
-  createdAt: string
+  project_id: string
+  client_id: string
+  professional_id: string
+  rating_quality: number
+  rating_timing: number
+  comment: string | null
+  created_at: string
+  
+  // Relaciones
+  client?: Profile
 }
 
-export interface Project {
-  id: string
-  clientId: string
-  title: string
-  description: string
-  type: string
-  photos?: string[]
-  budgetRange: string
-  location: string
-  startDate?: string
-  status: 'draft' | 'published' | 'receiving_proposals' | 'in_progress' | 'completed' | 'cancelled'
-  professionalsApplied?: string[]
-  createdAt: string
-}
-
-export interface Message {
-  id: string
-  senderId: string
-  receiverId: string
-  content: string
-  projectId?: string
-  timestamp: string
-  read: boolean
-}
-
-export interface User {
-  id: string
-  email: string
-  phone?: string
-  role: 'client' | 'professional' | 'admin'
-  name: string
-  createdAt: string
-}
-
-export type ProjectType = 
-  | 'Remodelación residencial'
-  | 'Reparación estructural'
-  | 'Ampliación'
-  | 'Instalación eléctrica'
-  | 'Fontanería y drenaje'
-  | 'HVAC (Climatización)'
-  | 'Drywall y plafones'
-  | 'Herrería y soldadura'
-  | 'Carpintería de obra'
-  | 'Pintura profesional'
-
-export type Location = 
-  | 'CDMX - Polanco'
-  | 'CDMX - Condesa'
-  | 'CDMX - Roma'
-  | 'CDMX - Coyoacán'
-  | 'CDMX - Santa Fe'
-  | 'Guadalajara - Centro'
-  | 'Guadalajara - Zapopan'
-  | 'Monterrey - San Pedro'
-  | 'Monterrey - Centro'
-
-export type VerificationStatus = 'pending' | 'verified' | 'rejected' | 'needs_info'
-
-export const PROJECT_TYPES: ProjectType[] = [
-  'Remodelación residencial',
-  'Reparación estructural',
-  'Ampliación',
-  'Instalación eléctrica',
-  'Fontanería y drenaje',
-  'HVAC (Climatización)',
-  'Drywall y plafones',
-  'Herrería y soldadura',
-  'Carpintería de obra',
-  'Pintura profesional',
-]
-
-export const LOCATIONS: Location[] = [
-  'CDMX - Polanco',
-  'CDMX - Condesa',
-  'CDMX - Roma',
-  'CDMX - Coyoacán',
-  'CDMX - Santa Fe',
-  'Guadalajara - Centro',
-  'Guadalajara - Zapopan',
-  'Monterrey - San Pedro',
-  'Monterrey - Centro',
-]
-
+/**
+ * Tipos auxiliares para el manejo de la UI
+ */
 export const BUDGET_RANGES = [
   '$5,000 - $10,000 MXN',
   '$10,000 - $25,000 MXN',
