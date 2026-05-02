@@ -1,66 +1,78 @@
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
 import { ArrowRight, UserPlus, Briefcase } from 'lucide-react'
 
 export function CTASection() {
   return (
-    <section className="py-16 md:py-20">
+    <section className="border-y-4 border-primary py-16 md:py-20 bg-background">
       <div className="container mx-auto px-4">
-        <div className="grid gap-8 md:grid-cols-2">
-          {/* For Professionals */}
-          <div className="relative overflow-hidden rounded-2xl bg-primary p-8 md:p-10">
-            <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/10" />
-            <div className="absolute -bottom-10 -left-10 h-32 w-32 rounded-full bg-white/5" />
-            
+        <div className="grid gap-0 md:grid-cols-2 border-2 border-primary shadow-[8px_8px_0px_0px_rgba(15,23,42,1)]">
+
+          {/* For Professionals — dark card */}
+          <div className="relative overflow-hidden bg-primary p-8 md:p-12 border-r-0 md:border-r-2 border-b-2 md:border-b-0 border-primary">
+            {/* Brutalist accent stripe */}
+            <div className="absolute top-0 left-0 h-1 w-full bg-accent" />
+
             <div className="relative">
-              <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-white/20">
-                <UserPlus className="h-6 w-6 text-primary-foreground" />
+              {/* Icon */}
+              <div className="mb-6 flex h-14 w-14 items-center justify-center border-2 border-primary-foreground/30 bg-white/10 shadow-[4px_4px_0px_0px_rgba(234,179,8,1)]">
+                <UserPlus className="h-6 w-6 text-accent" />
               </div>
-              
-              <h3 className="mb-3 text-2xl font-bold text-primary-foreground">
-                ¿Eres profesional?
-              </h3>
-              <p className="mb-6 text-primary-foreground/80 leading-relaxed">
-                Únete a la lista azul y conecta con miles de clientes que buscan 
-                profesionales certificados como tú. Aumenta tu visibilidad y haz 
-                crecer tu negocio.
+
+              <p className="mb-2 text-xs font-black uppercase tracking-widest text-accent">
+                — Para profesionales
               </p>
-              
-              <Button variant="secondary" size="lg" asChild>
-                <Link href="/registro-profesional">
-                  Regístrate como Pro
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
+              <h3 className="mb-4 text-3xl font-black uppercase tracking-tight text-primary-foreground md:text-4xl">
+                ¿Eres<br />profesional?
+              </h3>
+              <p className="mb-8 text-primary-foreground/70 leading-relaxed">
+                Únete y conecta con miles de clientes que buscan
+                profesionales certificados como tú. Aumenta tu visibilidad
+                y haz crecer tu negocio.
+              </p>
+
+              <Link
+                href="/registro-profesional"
+                className="inline-flex items-center gap-2 border-2 border-accent bg-accent px-6 py-3 text-sm font-black uppercase tracking-widest text-primary shadow-[4px_4px_0px_0px_rgba(255,255,255,0.3)] transition-all hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px]"
+              >
+                Regístrate como Pro
+                <ArrowRight className="h-4 w-4" />
+              </Link>
             </div>
           </div>
 
-          {/* For Clients */}
-          <div className="relative overflow-hidden rounded-2xl border border-border bg-card p-8 md:p-10">
-            <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-primary/5" />
-            <div className="absolute -bottom-10 -left-10 h-32 w-32 rounded-full bg-accent/10" />
-            
+          {/* For Clients — light card */}
+          <div className="relative overflow-hidden bg-card p-8 md:p-12">
+            {/* Brutalist accent stripe */}
+            <div className="absolute top-0 left-0 h-1 w-full bg-primary" />
+
             <div className="relative">
-              <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
-                <Briefcase className="h-6 w-6 text-primary" />
+              {/* Icon */}
+              <div className="mb-6 flex h-14 w-14 items-center justify-center border-2 border-primary bg-primary text-primary-foreground shadow-[4px_4px_0px_0px_rgba(234,179,8,1)]">
+                <Briefcase className="h-6 w-6 text-accent" />
               </div>
-              
-              <h3 className="mb-3 text-2xl font-bold text-foreground">
-                ¿Tienes un proyecto?
-              </h3>
-              <p className="mb-6 text-muted-foreground leading-relaxed">
-                Publica tu proyecto gratis y recibe cotizaciones de profesionales 
-                verificados en tu zona. Compara precios y elige al mejor para tu obra.
+
+              <p className="mb-2 text-xs font-black uppercase tracking-widest text-muted-foreground">
+                — Para clientes
               </p>
-              
-              <Button size="lg" asChild>
-                <Link href="/publicar-proyecto">
-                  Publicar Proyecto
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
+              <h3 className="mb-4 text-3xl font-black uppercase tracking-tight text-foreground md:text-4xl">
+                ¿Tienes un<br />proyecto?
+              </h3>
+              <p className="mb-8 text-muted-foreground leading-relaxed">
+                Publica tu proyecto gratis y recibe cotizaciones de
+                profesionales verificados en tu zona. Compara precios y
+                elige al mejor para tu obra.
+              </p>
+
+              <Link
+                href="/publicar-proyecto"
+                className="inline-flex items-center gap-2 border-2 border-primary bg-accent px-6 py-3 text-sm font-black uppercase tracking-widest text-primary shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] transition-all hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px]"
+              >
+                Publicar Proyecto
+                <ArrowRight className="h-4 w-4" />
+              </Link>
             </div>
           </div>
+
         </div>
       </div>
     </section>
